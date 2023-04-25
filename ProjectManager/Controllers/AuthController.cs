@@ -25,4 +25,13 @@ public class AuthController : Controller
 
         return Ok();
     }
+    
+    [HttpPost]
+    [ProducesResponseType(typeof(LoginUser.Response), 200)]
+    public async Task<ActionResult<LoginUser.Response>> Login([FromBody] LoginUser.Command command, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(command, cancellationToken);
+
+        return Ok(response);
+    }
 }

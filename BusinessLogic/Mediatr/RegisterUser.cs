@@ -16,11 +16,15 @@ public static class RegisterUser
         {
             RuleFor(x => x.Email)
                 .NotEmpty()
-                .EmailAddress();
+                .WithMessage("E-mail не должен быть пустым")
+                .EmailAddress()
+                .WithMessage("E-mail должен быть email адресом");
 
             RuleFor(x => x.Password)
                 .NotEmpty()
-                .Length(8, 50);
+                .WithMessage("Пароль не должен быть пустым")
+                .Length(8, 50)
+                .WithMessage("Длина пароля должна быть от 8 до 50 символов");
         }
     }
 

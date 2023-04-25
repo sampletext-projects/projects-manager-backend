@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using BusinessLogic.Jwt;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +15,8 @@ public static class Registrar
 
         services.AddValidatorsFromAssembly(assembly);
 
+        services.AddTransient<IJwtGeneratorService, JwtGeneratorService>();
+        
         return services;
     }
 }
