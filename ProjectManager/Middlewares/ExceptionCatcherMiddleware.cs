@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using FluentValidation;
 
 namespace ProjectManager.Middlewares;
 
@@ -16,6 +17,11 @@ public class ExceptionCatcherMiddleware
         try
         {
             await _next(context);
+        }
+        catch (ValidationException ex)
+        {
+            context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+            await context.Response.WriteAsJsonAsync(new ErrorDto(string.Join("\n", ex.Errors.Select(x => x.ErrorMessage))));
         }
         catch (Exception ex)
         {
