@@ -2,11 +2,15 @@
 WORKDIR /app
 
 COPY ./ProjectManager/ProjectManager.csproj ./ProjectManager/ProjectManager.csproj
+COPY ./DataAccess/DataAccess.csproj ./DataAccess/DataAccess.csproj
+COPY ./BusinessLogic/BusinessLogic.csproj ./BusinessLogic/BusinessLogic.csproj
 
 # restore only main project, it references everything that is required
 RUN dotnet restore ./ProjectManager/ProjectManager.csproj
 
 COPY ./ProjectManager ./ProjectManager
+COPY ./DataAccess ./DataAccess
+COPY ./BusinessLogic ./BusinessLogic
 
 RUN dotnet publish ./ProjectManager/ProjectManager.csproj -c Release -o out --no-restore
 

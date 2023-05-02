@@ -14,14 +14,14 @@ public static class ApplicationBuilderExtensions
             options =>
             {
                 options.EnableAnnotations();
-                options.CustomSchemaIds(SwaggerTypeNamesProvider.GetSwaggerDisplayedName);
+                options.CustomSchemaIds(SwaggerNameProvider.GetSwaggerDisplayedName);
                 options.SwaggerDoc(
                     "v1",
                     new OpenApiInfo
                     {
                         Version = "v1",
-                        Title = "Akiana AUTH API",
-                        Description = "Akiana AUTH API"
+                        Title = "PM API",
+                        Description = "PM API"
                     }
                 );
     
