@@ -27,6 +27,8 @@ builder.SetupAuthentication();
 
 var app = builder.Build();
 
+await app.Services.MigrateDb();
+
 app.UseForwardedHeaders(
     new ForwardedHeadersOptions
     {

@@ -1,5 +1,6 @@
 ﻿using BusinessLogic.Jwt;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +15,7 @@ public static class Registrar
         services.AddMediatR(x => x.RegisterServicesFromAssembly(assembly));
 
         services.AddValidatorsFromAssembly(assembly);
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         services.AddTransient<IJwtGeneratorService, JwtGeneratorService>();
         

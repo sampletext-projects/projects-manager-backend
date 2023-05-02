@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using BusinessLogic;
 using FluentValidation;
 
 namespace ProjectManager.Middlewares;
@@ -22,6 +23,11 @@ public class ExceptionCatcherMiddleware
         {
             context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
             await context.Response.WriteAsJsonAsync(new ErrorDto(string.Join("\n", ex.Errors.Select(x => x.ErrorMessage))));
+        }
+        catch (BusinessException ex)
+        {
+            context.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+            await context.Response.WriteAsJsonAsync(new ErrorDto(ex.Message));
         }
         catch (Exception ex)
         {

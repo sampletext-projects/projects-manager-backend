@@ -1,9 +1,5 @@
 version: "3"
 
-networks:
-  birdegop-net:
-    external: true
-
 services:
 
   backend:
@@ -18,7 +14,7 @@ services:
     ports:
       - "5000:80"
     networks:
-      - birdegop-net
+      - default
     
   postgres_db:
     container_name: postgres_example
@@ -30,10 +26,11 @@ services:
     restart: unless-stopped
     volumes:
       - /home/egop/pm/postgresdata:/var/lib/postgresql/data
+#      - ./postgresdata:/var/lib/postgresql/data
     ports:
       - '44444:5432'
     networks:
-      - birdegop-net
+      - default
   
   nginx:
     build:
@@ -44,4 +41,4 @@ services:
       - "80:80"
       - "443:443"
     networks:
-      - birdegop-net
+      - default

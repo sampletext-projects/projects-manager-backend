@@ -19,4 +19,15 @@ public static class Registrar
 
         return services;
     }
+
+    public static async Task MigrateDb(this IServiceProvider provider)
+    {
+        Console.WriteLine("Migrating Db Started");
+        using var serviceScope = provider.CreateScope();
+        var context = serviceScope.ServiceProvider.GetRequiredService<ProjectsContext>();
+        await context.Database.MigrateAsync();
+        
+        Console.WriteLine("Migrating Db Finished");
+        await Seeder.Seed(context);
+    }
 }
