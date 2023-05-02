@@ -42,6 +42,14 @@ namespace DataAccess.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d95dc404-923b-4e4f-b972-0d08891f9d19"),
+                            Email = "1@abc.abc",
+                            Password = "123123123"
+                        });
                 });
 #pragma warning restore 612, 618
         }

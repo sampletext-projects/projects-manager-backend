@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccess.Data.Migrations
 {
     [DbContext(typeof(ProjectsContext))]
-    [Migration("20230502180338_Init")]
+    [Migration("20230502183440_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,14 @@ namespace DataAccess.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AppUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d95dc404-923b-4e4f-b972-0d08891f9d19"),
+                            Email = "1@abc.abc",
+                            Password = "123123123"
+                        });
                 });
 #pragma warning restore 612, 618
         }

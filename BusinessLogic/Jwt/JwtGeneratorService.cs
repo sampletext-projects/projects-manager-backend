@@ -64,7 +64,7 @@ public class JwtGeneratorService : IJwtGeneratorService
                         .ToString()
                 )
             },
-            expires: DateTime.UtcNow.AddSeconds(_config.LifetimeSeconds),
+            expires: DateTime.UtcNow.AddSeconds(_config.RefreshLifetimeSeconds),
             signingCredentials: signingCredentials
         );
 

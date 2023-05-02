@@ -26,8 +26,5 @@ public static class Registrar
         using var serviceScope = provider.CreateScope();
         var context = serviceScope.ServiceProvider.GetRequiredService<ProjectsContext>();
         await context.Database.MigrateAsync();
-        
-        Console.WriteLine("Migrating Db Finished");
-        await Seeder.Seed(context);
     }
 }

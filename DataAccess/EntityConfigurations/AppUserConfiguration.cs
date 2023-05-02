@@ -18,5 +18,14 @@ public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
 
         builder.Property(x => x.Password)
             .IsRequired();
+
+        builder.HasData(
+            new AppUser()
+            {
+                Id = new Guid("d95dc404-923b-4e4f-b972-0d08891f9d19"),
+                Email = "1@abc.abc",
+                Password = "123123123"
+            }
+        );
     }
 }

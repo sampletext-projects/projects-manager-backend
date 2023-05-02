@@ -22,6 +22,11 @@ namespace DataAccess.Data.Migrations
                 {
                     table.PrimaryKey("PK_AppUser", x => x.Id);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AppUser",
+                columns: new[] { "Id", "Email", "Password", "Username" },
+                values: new object[] { new Guid("d95dc404-923b-4e4f-b972-0d08891f9d19"), "1@abc.abc", "123123123", null });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
