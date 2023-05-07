@@ -52,43 +52,78 @@ namespace DataAccess.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("DataAccess.Models.Participation", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("GrantedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "ProjectId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("Participation");
+                });
+
             modelBuilder.Entity("DataAccess.Models.Project", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CreatorId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
+
+                    b.Property<long>("Style")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Visibility")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("CreatorId");
+                    b.HasKey("Id");
 
                     b.ToTable("Project");
                 });
 
-            modelBuilder.Entity("DataAccess.Models.Project", b =>
+            modelBuilder.Entity("DataAccess.Models.Participation", b =>
                 {
-                    b.HasOne("DataAccess.Models.AppUser", "Creator")
-                        .WithMany("CreatedProjects")
-                        .HasForeignKey("CreatorId")
+                    b.HasOne("DataAccess.Models.Project", "Project")
+                        .WithMany("Participations")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Creator");
+                    b.HasOne("DataAccess.Models.AppUser", "User")
+                        .WithMany("Participations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DataAccess.Models.AppUser", b =>
                 {
-                    b.Navigation("CreatedProjects");
+                    b.Navigation("Participations");
+                });
+
+            modelBuilder.Entity("DataAccess.Models.Project", b =>
+                {
+                    b.Navigation("Participations");
                 });
 #pragma warning restore 612, 618
         }

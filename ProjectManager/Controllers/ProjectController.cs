@@ -20,12 +20,32 @@ public class ProjectController : Controller
 
     [HttpGet]
     [Authorize]
-    [ProducesResponseType(200)]
-    public async Task<ActionResult> ListProjects(CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(ExploreProjects.CommandResult), 200)]
+    public async Task<ActionResult> Explore(CancellationToken cancellationToken)
     {
         var userId = HttpContext.GetUserId();
 
-        var result = await _mediator.Send(new ListProjects.Command(userId), cancellationToken);
+        var result = await _mediator.Send(new ExploreProjects.Command(userId), cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Authorize]
+    [ProducesResponseType(typeof(SearchProjects.CommandResult), 200)]
+    public async Task<ActionResult> Search(string search, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new SearchProjects.Command(search), cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [ProducesResponseType(typeof(CreateProject.CommandResult), 200)]
+    public async Task<ActionResult<CreateProject.CommandResult>> Create([FromBody] CreateProject.Command request, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(request, cancellationToken);
 
         return Ok(result);
     }

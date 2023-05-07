@@ -19,8 +19,14 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder.Property(x => x.Description)
             .IsRequired(false);
 
-        builder.HasOne(x => x.Creator)
-            .WithMany(x => x.CreatedProjects)
-            .HasForeignKey(x => x.CreatorId);
+        builder.HasMany(x => x.Users)
+            .WithMany(x => x.Projects)
+            .UsingEntity<Participation>(
+                arg => arg.HasOne(r => r.User)
+                    .WithMany(item => item.Participations),
+                arg => arg.HasOne(r => r.Project)
+                    .WithMany(r => r.Participations),
+                obj => obj.HasKey(r => new {r.UserId, r.ProjectId})
+            );
     }
 }

@@ -6,9 +6,13 @@ public class Project
 
     public string Title { get; set; }
 
-    public string Description { get; set; }
+    public string? Description { get; set; }
+
+    public ProjectStyle Style { get; set; }
     
-    public Guid CreatorId { get; set; }
+    public Visibility Visibility { get; set; }
+
+    public virtual ICollection<Participation> Participations { get; set; }
     
-    public virtual AppUser Creator { get; set; }
+    public virtual ICollection<AppUser> Users { get; set; }
 }

@@ -10,5 +10,6 @@ public class AppUser
 
     public string Password { get; set; }
 
-    public virtual ICollection<Project> CreatedProjects { get; set; }
+    public virtual ICollection<Participation> Participations { get; set; }
+    public virtual ICollection<Project> Projects { get; set; }
 }
