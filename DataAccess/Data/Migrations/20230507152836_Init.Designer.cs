@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccess.Data.Migrations
 {
     [DbContext(typeof(ProjectsContext))]
-    [Migration("20230507144634_Init")]
+    [Migration("20230507152836_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,8 +65,8 @@ namespace DataAccess.Data.Migrations
                     b.Property<DateTime>("GrantedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
+                    b.Property<long>("Role")
+                        .HasColumnType("bigint");
 
                     b.HasKey("UserId", "ProjectId");
 
@@ -99,6 +99,37 @@ namespace DataAccess.Data.Migrations
                     b.ToTable("Project");
                 });
 
+            modelBuilder.Entity("DataAccess.Models.ProjectTask", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("Status")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectTask");
+                });
+
             modelBuilder.Entity("DataAccess.Models.Participation", b =>
                 {
                     b.HasOne("DataAccess.Models.Project", "Project")
@@ -118,14 +149,37 @@ namespace DataAccess.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DataAccess.Models.ProjectTask", b =>
+                {
+                    b.HasOne("DataAccess.Models.AppUser", "Creator")
+                        .WithMany("CreatedTasks")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Models.Project", "Project")
+                        .WithMany("Tasks")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("DataAccess.Models.AppUser", b =>
                 {
+                    b.Navigation("CreatedTasks");
+
                     b.Navigation("Participations");
                 });
 
             modelBuilder.Entity("DataAccess.Models.Project", b =>
                 {
                     b.Navigation("Participations");
+
+                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

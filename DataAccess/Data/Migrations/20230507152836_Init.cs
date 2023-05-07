@@ -45,7 +45,7 @@ namespace DataAccess.Data.Migrations
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
                     GrantedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Role = table.Column<int>(type: "integer", nullable: false)
+                    Role = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,6 +64,34 @@ namespace DataAccess.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProjectTask",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<long>(type: "bigint", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectTask", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProjectTask_AppUser_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "AppUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectTask_Project_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Project",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AppUser",
                 columns: new[] { "Id", "Email", "Password", "Username" },
@@ -73,12 +101,25 @@ namespace DataAccess.Data.Migrations
                 name: "IX_Participation_ProjectId",
                 table: "Participation",
                 column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectTask_CreatorId",
+                table: "ProjectTask",
+                column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectTask_ProjectId",
+                table: "ProjectTask",
+                column: "ProjectId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Participation");
+
+            migrationBuilder.DropTable(
+                name: "ProjectTask");
 
             migrationBuilder.DropTable(
                 name: "AppUser");

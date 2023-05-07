@@ -12,4 +12,6 @@ public class AppUser
 
     public virtual ICollection<Participation> Participations { get; set; }
     public virtual ICollection<Project> Projects { get; set; }
+    
+    public virtual ICollection<ProjectTask> CreatedTasks { get; set; }
 }

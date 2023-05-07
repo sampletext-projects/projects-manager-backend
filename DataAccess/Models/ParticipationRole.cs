@@ -1,8 +1,9 @@
 ﻿namespace DataAccess.Models;
 
-public enum ParticipationRole
+public enum ParticipationRole : uint
 {
-    Creator,
-    Admin,
-    Readonly
+    Unknown = 0,
+    Creator = 1,
+    Admin = 2,
+    Readonly = 3
 }

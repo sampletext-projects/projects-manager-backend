@@ -16,6 +16,7 @@ public static class Registrar
         );
 
         services.AddScoped(typeof(IRepository<>), typeof(RepositoryBase<>));
+        services.AddScoped<IDbExtensions, DbExtensions>();
 
         return services;
     }
