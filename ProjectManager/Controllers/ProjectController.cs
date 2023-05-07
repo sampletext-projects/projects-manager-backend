@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ProjectManager.EndpointModels;
 
 namespace ProjectManager.Controllers;
 
@@ -43,9 +44,34 @@ public class ProjectController : Controller
     [HttpPost]
     [Authorize]
     [ProducesResponseType(typeof(CreateProject.CommandResult), 200)]
-    public async Task<ActionResult<CreateProject.CommandResult>> Create([FromBody] CreateProject.Command request, CancellationToken cancellationToken)
+    public async Task<ActionResult<CreateProject.CommandResult>> Create([FromBody] CreateProjectEndpoint.Request request, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(request, cancellationToken);
+        var userId = HttpContext.GetUserId();
+        var command = new CreateProject.Command(
+            userId,
+            request.Title,
+            request.Description,
+            request.Style,
+            request.Visibility
+        );
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [ProducesResponseType(typeof(JoinProject.CommandResult), 200)]
+    public async Task<ActionResult<JoinProject.CommandResult>> Join([FromQuery] Guid projectId, CancellationToken cancellationToken)
+    {
+        var userId = HttpContext.GetUserId();
+
+        var command = new JoinProject.Command(
+            userId,
+            projectId
+        );
+
+        var result = await _mediator.Send(command, cancellationToken);
 
         return Ok(result);
     }
