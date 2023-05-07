@@ -4,14 +4,12 @@ using DataAccess.RepositoryNew;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using TaskStatus = DataAccess.Models.TaskStatus;
 
 namespace BusinessLogic.Mediatr;
 
-public static class GetTasksByProject
+public static class GetProjectParticipants
 {
     public record Command(Guid UserId, Guid ProjectId) : IRequest<CommandResult>;
-
 
     public class Validator : AbstractValidator<Command>
     {
@@ -23,19 +21,18 @@ public static class GetTasksByProject
         }
     }
 
-    public record CommandResult(ICollection<Item> Tasks);
+    public record CommandResult(ICollection<Item> Participants);
 
-    public record Item(string Title, string? Description, TaskStatus Status);
+    public record Item(Guid Id, string Email, string? Username, ParticipationRole Role);
 
     public class Handler : IRequestHandler<Command, CommandResult>
     {
-        private readonly IRepository<ProjectTask> _repository;
-
+        private readonly IRepository<Participation> _participationRepository;
         private readonly IDbExtensions _dbExtensions;
 
-        public Handler(IRepository<ProjectTask> repository, IDbExtensions dbExtensions)
+        public Handler(IRepository<Participation> participationRepository, IDbExtensions dbExtensions)
         {
-            _repository = repository;
+            _participationRepository = participationRepository;
             _dbExtensions = dbExtensions;
         }
 
@@ -45,12 +42,19 @@ public static class GetTasksByProject
 
             if (!canView)
             {
-                throw new BusinessException("Вы не можете просматривать задачи данного проекта");
+                throw new BusinessException("Вы не можете просматривать участников данного проекта");
             }
 
-            var items = await _repository.GetAll()
+            var items = await _participationRepository.GetAll()
                 .Where(x => x.ProjectId == request.ProjectId)
-                .Select(x => new Item(x.Title, x.Description, x.Status))
+                .Select(
+                    x => new Item(
+                        x.User.Id,
+                        x.User.Email,
+                        x.User.Username,
+                        x.Role
+                    )
+                )
                 .ToListAsync(cancellationToken);
 
             return new CommandResult(items);

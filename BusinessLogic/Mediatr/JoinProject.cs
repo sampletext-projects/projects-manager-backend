@@ -1,5 +1,6 @@
 ﻿using DataAccess.Models;
 using DataAccess.RepositoryNew;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,16 @@ namespace BusinessLogic.Mediatr;
 public static class JoinProject
 {
     public record Command(Guid UserId, Guid ProjectId) : IRequest<CommandResult>;
+
+    public class Validator : AbstractValidator<Command>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.ProjectId)
+                .NotEmpty()
+                .WithMessage("Не выбран проект.");
+        }
+    }
 
     public record CommandResult();
 
