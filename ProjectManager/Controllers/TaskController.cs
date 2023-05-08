@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectManager.EndpointModels;
+using TaskStatus = DataAccess.Models.TaskStatus;
 
 namespace ProjectManager.Controllers;
 
@@ -45,6 +46,22 @@ public class TaskController : Controller
         var command = new GetTasksByProject.Command(
             userId,
             projectId
+        );
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [ProducesResponseType(typeof(ChangeTaskStatus.CommandResult), 200)]
+    public async Task<ActionResult<ChangeTaskStatus.CommandResult>> ChangeStatus([FromQuery] Guid taskId, [FromQuery] TaskStatus newStatus, CancellationToken cancellationToken)
+    {
+        var userId = HttpContext.GetUserId();
+        var command = new ChangeTaskStatus.Command(
+            userId,
+            taskId,
+            newStatus
         );
         var result = await _mediator.Send(command, cancellationToken);
 
