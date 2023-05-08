@@ -75,4 +75,23 @@ public class ProjectController : Controller
 
         return Ok(result);
     }
+
+    [HttpPost]
+    [Authorize]
+    [ProducesResponseType(typeof(EditProject.CommandResult), 200)]
+    public async Task<ActionResult<EditProject.CommandResult>> Edit([FromBody] EditProjectEndpoint.Request request, CancellationToken cancellationToken)
+    {
+        var userId = HttpContext.GetUserId();
+        var command = new EditProject.Command(
+            userId,
+            request.ProjectId,
+            request.Title, 
+            request.Description,
+            request.Style,
+            request.Visibility
+        );
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok(result);
+    }
 }

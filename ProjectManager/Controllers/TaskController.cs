@@ -67,4 +67,21 @@ public class TaskController : Controller
 
         return Ok(result);
     }
+
+    [HttpPost]
+    [Authorize]
+    [ProducesResponseType(typeof(EditTask.CommandResult), 200)]
+    public async Task<ActionResult<EditTask.CommandResult>> Edit([FromBody] EditTaskEndpoint.Request request, CancellationToken cancellationToken)
+    {
+        var userId = HttpContext.GetUserId();
+        var command = new EditTask.Command(
+            userId,
+            request.TaskId,
+            request.Title, 
+            request.Description
+        );
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok(result);
+    }
 }
