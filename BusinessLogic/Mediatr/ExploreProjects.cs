@@ -12,7 +12,7 @@ public static class ExploreProjects
 
     public record CommandResult(ICollection<Item> Projects);
 
-    public record Item(string Title, string? Description);
+    public record Item(Guid Id, string Title, string? Description);
     
     public class Handler : IRequestHandler<Command, CommandResult>
     {
@@ -28,7 +28,7 @@ public static class ExploreProjects
             // ищем открытые проекты, созданные другими пользователями
             var projects = await _repository.GetAll()
                 .Where(x => x.Visibility == Visibility.Visible && x.Participations.Any(y => y.Role == ParticipationRole.Creator && y.UserId != request.UserId))
-                .Select(x => new Item(x.Title, x.Description))
+                .Select(x => new Item(x.Id, x.Title, x.Description))
                 .ToListAsync(cancellationToken);
 
             return new CommandResult(projects);

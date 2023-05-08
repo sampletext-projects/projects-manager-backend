@@ -22,7 +22,7 @@ public static class SearchProjects
 
     public record CommandResult(ICollection<Item> Projects);
 
-    public record Item(string Title, string? Description);
+    public record Item(Guid Id, string Title, string? Description);
 
     public class Handler : IRequestHandler<Command, CommandResult>
     {
@@ -37,7 +37,7 @@ public static class SearchProjects
         {
             var projects = await _repository.GetAll()
                 .Where(x => x.Title.StartsWith(request.Search) || (x.Description != null && x.Description.StartsWith(request.Search)))
-                .Select(x => new Item(x.Title, x.Description))
+                .Select(x => new Item(x.Id, x.Title, x.Description))
                 .ToListAsync(cancellationToken);
 
             return new CommandResult(projects);
