@@ -14,4 +14,7 @@ public class AppUser
     public virtual ICollection<Project>? Projects { get; set; }
     
     public virtual ICollection<ProjectTask>? CreatedTasks { get; set; }
+    
+    public virtual ICollection<ProjectComment>? ProjectComments { get; set; }
+    public virtual ICollection<TaskComment>? TaskComments { get; set; }
 }

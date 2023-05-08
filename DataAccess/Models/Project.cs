@@ -12,9 +12,11 @@ public class Project
 
     public Visibility Visibility { get; set; }
 
-    public virtual ICollection<ProjectTask> Tasks { get; set; }
+    public virtual ICollection<ProjectTask>? Tasks { get; set; }
 
-    public virtual ICollection<Participation> Participations { get; set; }
+    public virtual ICollection<Participation>? Participations { get; set; }
 
-    public virtual ICollection<AppUser> Users { get; set; }
+    public virtual ICollection<AppUser>? Users { get; set; }
+
+    public virtual ICollection<ProjectComment>? Comments { get; set; }
 }

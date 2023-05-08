@@ -1,6 +1,6 @@
 ﻿namespace DataAccess.Models;
 
-public enum Visibility
+public enum Visibility : uint
 {
     Unknown = 0,
     Visible = 1,

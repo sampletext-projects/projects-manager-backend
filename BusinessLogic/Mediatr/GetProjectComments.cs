@@ -1,42 +1,29 @@
 ﻿using DataAccess;
 using DataAccess.Models;
 using DataAccess.RepositoryNew;
-using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using TaskStatus = DataAccess.Models.TaskStatus;
 
 namespace BusinessLogic.Mediatr;
 
-public static class GetTasksByProject
+public class GetProjectComments
 {
     public record Command(Guid UserId, Guid ProjectId) : IRequest<CommandResult>;
 
+    public record CommandResult(ICollection<Item> Comments);
 
-    public class Validator : AbstractValidator<Command>
-    {
-        public Validator()
-        {
-            RuleFor(x => x.ProjectId)
-                .NotEmpty()
-                .WithMessage("Не выбран проект.");
-        }
-    }
+    public record Item(Guid Id, string Content, Guid AuthorId, string AuthorUsername, DateTime CreatedAt);
 
-    public record CommandResult(ICollection<Item> Tasks);
-
-    public record Item(string Title, string? Description, TaskStatus Status);
 
     public class Handler : IRequestHandler<Command, CommandResult>
     {
-        private readonly IRepository<ProjectTask> _repository;
-
+        private readonly IRepository<ProjectComment> _repository;
         private readonly IDbExtensions _dbExtensions;
 
-        public Handler(IRepository<ProjectTask> repository, IDbExtensions dbExtensions)
+        public Handler(IRepository<ProjectComment> repository, IDbExtensions dbExtensions)
         {
-            _repository = repository;
             _dbExtensions = dbExtensions;
+            _repository = repository;
         }
 
         public async Task<CommandResult> Handle(Command request, CancellationToken cancellationToken)
@@ -45,12 +32,20 @@ public static class GetTasksByProject
 
             if (!canView)
             {
-                throw new BusinessException("Вы не можете просматривать задачи данного проекта");
+                throw new BusinessException("Вы не можете просматривать комментарии к данному проекту");
             }
 
             var items = await _repository.GetAll()
                 .Where(x => x.ProjectId == request.ProjectId)
-                .Select(x => new Item(x.Title, x.Description, x.Status))
+                .Select(
+                    x => new Item(
+                        x.Id,
+                        x.Content,
+                        x.AuthorId,
+                        x.Author.Username ?? x.Author.Email,
+                        x.CreatedAt
+                    )
+                )
                 .ToListAsync(cancellationToken);
 
             return new CommandResult(items);

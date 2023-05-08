@@ -45,7 +45,7 @@ public static class CreateTask
 
         public async Task<CommandResult> Handle(Command request, CancellationToken cancellationToken)
         {
-            var canEdit = await _dbExtensions.CanEdit(request.UserId, request.ProjectId, cancellationToken);
+            var canEdit = await _dbExtensions.CanEditProject(request.UserId, request.ProjectId, cancellationToken);
 
             if (!canEdit)
             {

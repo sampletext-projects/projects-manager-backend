@@ -89,12 +89,40 @@ namespace DataAccess.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Visibility")
-                        .HasColumnType("integer");
+                    b.Property<long>("Visibility")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.ToTable("Project");
+                });
+
+            modelBuilder.Entity("DataAccess.Models.ProjectComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectComment");
                 });
 
             modelBuilder.Entity("DataAccess.Models.ProjectTask", b =>
@@ -128,6 +156,34 @@ namespace DataAccess.Data.Migrations
                     b.ToTable("ProjectTask");
                 });
 
+            modelBuilder.Entity("DataAccess.Models.TaskComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("TaskId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("TaskComment");
+                });
+
             modelBuilder.Entity("DataAccess.Models.Participation", b =>
                 {
                     b.HasOne("DataAccess.Models.Project", "Project")
@@ -145,6 +201,25 @@ namespace DataAccess.Data.Migrations
                     b.Navigation("Project");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DataAccess.Models.ProjectComment", b =>
+                {
+                    b.HasOne("DataAccess.Models.AppUser", "Author")
+                        .WithMany("ProjectComments")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Models.Project", "Project")
+                        .WithMany("Comments")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("DataAccess.Models.ProjectTask", b =>
@@ -166,18 +241,48 @@ namespace DataAccess.Data.Migrations
                     b.Navigation("Project");
                 });
 
+            modelBuilder.Entity("DataAccess.Models.TaskComment", b =>
+                {
+                    b.HasOne("DataAccess.Models.AppUser", "Author")
+                        .WithMany("TaskComments")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Models.ProjectTask", "Task")
+                        .WithMany("Comments")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Task");
+                });
+
             modelBuilder.Entity("DataAccess.Models.AppUser", b =>
                 {
                     b.Navigation("CreatedTasks");
 
                     b.Navigation("Participations");
+
+                    b.Navigation("ProjectComments");
+
+                    b.Navigation("TaskComments");
                 });
 
             modelBuilder.Entity("DataAccess.Models.Project", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Participations");
 
                     b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("DataAccess.Models.ProjectTask", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

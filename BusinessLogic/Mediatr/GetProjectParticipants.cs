@@ -38,7 +38,7 @@ public static class GetProjectParticipants
 
         public async Task<CommandResult> Handle(Command request, CancellationToken cancellationToken)
         {
-            var canView = await _dbExtensions.CanView(request.UserId, request.ProjectId, cancellationToken);
+            var canView = await _dbExtensions.CanViewProject(request.UserId, request.ProjectId, cancellationToken);
 
             if (!canView)
             {

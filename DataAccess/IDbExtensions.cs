@@ -6,8 +6,10 @@ namespace DataAccess;
 
 public interface IDbExtensions
 {
-    Task<bool> CanEdit(Guid userId, Guid projectId, CancellationToken cancellationToken);
-    Task<bool> CanView(Guid userId, Guid projectId, CancellationToken cancellationToken);
+    Task<bool> CanEditProject(Guid userId, Guid projectId, CancellationToken cancellationToken);
+    Task<bool> CanViewProject(Guid userId, Guid projectId, CancellationToken cancellationToken);
+    Task<bool> CanEditTask(Guid userId, Guid taskId, CancellationToken cancellationToken);
+    Task<bool> CanViewTask(Guid userId, Guid taskId, CancellationToken cancellationToken);
 }
 
 public class DbExtensions : IDbExtensions
@@ -19,15 +21,29 @@ public class DbExtensions : IDbExtensions
         _context = context;
     }
 
-    public async Task<bool> CanEdit(Guid userId, Guid projectId, CancellationToken cancellationToken)
+    public async Task<bool> CanEditProject(Guid userId, Guid projectId, CancellationToken cancellationToken)
     {
         return await _context.Set<Participation>()
             .AnyAsync(x => x.UserId == userId && x.ProjectId == projectId && x.Role == ParticipationRole.Admin || x.Role == ParticipationRole.Creator, cancellationToken: cancellationToken);
     }
 
-    public async Task<bool> CanView(Guid userId, Guid projectId, CancellationToken cancellationToken)
+    public async Task<bool> CanEditTask(Guid userId, Guid taskId, CancellationToken cancellationToken)
+    {
+        return await _context.Set<Participation>()
+            .Where(x => x.Project.Tasks != null && x.Project.Tasks.Any(y => y.Id == taskId))
+            .AnyAsync(x => x.UserId == userId && x.Role == ParticipationRole.Admin || x.Role == ParticipationRole.Creator, cancellationToken: cancellationToken);
+    }
+
+    public async Task<bool> CanViewProject(Guid userId, Guid projectId, CancellationToken cancellationToken)
     {
         return await _context.Set<Participation>()
             .AnyAsync(x => x.UserId == userId && x.ProjectId == projectId, cancellationToken: cancellationToken);
+    }
+
+    public async Task<bool> CanViewTask(Guid userId, Guid taskId, CancellationToken cancellationToken)
+    {
+        return await _context.Set<Participation>()
+            .Where(x => x.Project.Tasks != null && x.Project.Tasks.Any(y => y.Id == taskId))
+            .AnyAsync(x => x.UserId == userId, cancellationToken: cancellationToken);
     }
 }
