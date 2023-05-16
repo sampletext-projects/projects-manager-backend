@@ -16,7 +16,7 @@ public class ProjectTask
     
     public Guid CreatorId { get; set; }
     
-    public AppUser Creator { get; set; }
+    public virtual AppUser Creator { get; set; }
 
     public virtual ICollection<TaskComment>? Comments { get; set; }
 }

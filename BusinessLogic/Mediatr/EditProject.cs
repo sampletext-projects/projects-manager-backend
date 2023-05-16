@@ -46,7 +46,7 @@ public static class EditProject
         {
             var canEdit = await _dbExtensions.CanEditProject(request.UserId, request.ProjectId, cancellationToken);
 
-            if (canEdit)
+            if (!canEdit)
             {
                 throw new BusinessException("Вы не можете редактировать данный проект");
             }
