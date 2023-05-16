@@ -41,6 +41,17 @@ public class ProjectController : Controller
         return Ok(result);
     }
 
+    [HttpGet]
+    [Authorize]
+    [ProducesResponseType(typeof(GetProjectById.CommandResult), 200)]
+    public async Task<ActionResult> GetById([FromQuery] Guid projectId, CancellationToken cancellationToken)
+    {
+        var userId = HttpContext.GetUserId();
+        var result = await _mediator.Send(new GetProjectById.Command(userId, projectId), cancellationToken);
+
+        return Ok(result);
+    }
+
     [HttpPost]
     [Authorize]
     [ProducesResponseType(typeof(CreateProject.CommandResult), 200)]
@@ -85,10 +96,27 @@ public class ProjectController : Controller
         var command = new EditProject.Command(
             userId,
             request.ProjectId,
-            request.Title, 
+            request.Title,
             request.Description,
             request.Style,
             request.Visibility
+        );
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [ProducesResponseType(typeof(AddUserToProject.CommandResult), 200)]
+    public async Task<ActionResult<AddUserToProject.CommandResult>> AddUser([FromBody] AddUserToProjectEndpoint.Request request, CancellationToken cancellationToken)
+    {
+        var userId = HttpContext.GetUserId();
+        var command = new AddUserToProject.Command(
+            userId,
+            request.UserId,
+            request.ProjectId,
+            request.Role
         );
         var result = await _mediator.Send(command, cancellationToken);
 

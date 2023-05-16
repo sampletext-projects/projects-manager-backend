@@ -25,7 +25,7 @@ public static class GetTasksByProject
 
     public record CommandResult(ICollection<Item> Tasks);
 
-    public record Item(string Title, string? Description, TaskStatus Status);
+    public record Item(Guid Id, string Title, string? Description, TaskStatus Status);
 
     public class Handler : IRequestHandler<Command, CommandResult>
     {
@@ -50,7 +50,7 @@ public static class GetTasksByProject
 
             var items = await _repository.GetAll()
                 .Where(x => x.ProjectId == request.ProjectId)
-                .Select(x => new Item(x.Title, x.Description, x.Status))
+                .Select(x => new Item(x.Id, x.Title, x.Description, x.Status))
                 .ToListAsync(cancellationToken);
 
             return new CommandResult(items);

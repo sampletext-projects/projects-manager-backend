@@ -82,4 +82,15 @@ public static class ApplicationBuilderExtensions
             };
         });
     }
+
+    public static void SetupLowercaseAll(this WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<RouteOptions>(
+            options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            }
+        );
+    }
 }

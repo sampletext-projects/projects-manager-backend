@@ -37,12 +37,13 @@ public class GetTaskComments
 
             var items = await _repository.GetAll()
                 .Where(x => x.TaskId == request.TaskId)
+                .OrderBy(x => x.CreatedAt)
                 .Select(
                     x => new Item(
                         x.Id,
                         x.Content,
                         x.AuthorId,
-                        x.Author.Username ?? x.Author.Email,
+                        !string.IsNullOrEmpty(x.Author.Username) ? x.Author.Username : x.Author.Email,
                         x.CreatedAt
                     )
                 )

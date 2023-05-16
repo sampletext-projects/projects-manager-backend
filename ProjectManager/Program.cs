@@ -23,6 +23,8 @@ builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection(nameof(Jw
 
 builder.SetupAuthentication();
 
+builder.SetupLowercaseAll();
+
 // ---
 
 var app = builder.Build();

@@ -56,7 +56,8 @@ public static class JoinProject
             var participation = new Participation()
             {
                 ProjectId = request.ProjectId,
-                UserId = request.UserId
+                UserId = request.UserId,
+                Role = ParticipationRole.Readonly
             };
 
             await _participationRepository.Add(participation, cancellationToken);
