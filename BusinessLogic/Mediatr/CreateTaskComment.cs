@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using DataAccess.Models;
 using DataAccess.RepositoryNew;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,20 @@ namespace BusinessLogic.Mediatr;
 public static class CreateTaskComment
 {
     public record Command(Guid UserId, Guid TaskId, string Content) : IRequest<CommandResult>;
+
+    public class Validator : AbstractValidator<Command>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.TaskId)
+                .NotEmpty()
+                .WithMessage("Не указана задача.");
+
+            RuleFor(x => x.Content)
+                .NotEmpty()
+                .WithMessage("Не заполнен комментарий");
+        }
+    }
 
     public record CommandResult(Guid Id);
 

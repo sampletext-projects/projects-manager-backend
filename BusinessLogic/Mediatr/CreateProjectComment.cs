@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using DataAccess.Models;
 using DataAccess.RepositoryNew;
+using FluentValidation;
 using MediatR;
 
 namespace BusinessLogic.Mediatr;
@@ -9,8 +10,22 @@ public static class CreateProjectComment
 {
     public record Command(Guid UserId, Guid ProjectId, string Content) : IRequest<CommandResult>;
 
+    public class Validator : AbstractValidator<Command>
+    {
+        public Validator()
+        {
+            RuleFor(x => x.ProjectId)
+                .NotEmpty()
+                .WithMessage("Не указан проект.");
+
+            RuleFor(x => x.Content)
+                .NotEmpty()
+                .WithMessage("Не заполнен комментарий");
+        }
+    }
+
     public record CommandResult(Guid Id);
-    
+
     public class Handler : IRequestHandler<Command, CommandResult>
     {
         private readonly IRepository<ProjectComment> _repository;

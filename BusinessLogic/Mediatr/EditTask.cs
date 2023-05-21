@@ -24,8 +24,9 @@ public static class EditTask
                 .NotEmpty()
                 .WithMessage("Не выбран задача.");
 
-            RuleFor(x => x.Title)
+            RuleFor(x => x.Description)
                 .NotEmpty()
+                .When(x => x.Description is not null)
                 .WithMessage("Не заполнен заголовок");
         }
     }

@@ -14,7 +14,7 @@ public class CommentController : Controller
 {
     private readonly IMediator _mediator;
 
-    public CommentController(IMediator mediator)
+    public CommentController(IMediator mediator, IServiceProvider provider)
     {
         _mediator = mediator;
     }

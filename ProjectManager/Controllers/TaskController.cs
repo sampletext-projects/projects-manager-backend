@@ -84,4 +84,19 @@ public class TaskController : Controller
 
         return Ok(result);
     }
+
+    [HttpGet]
+    [Authorize]
+    [ProducesResponseType(typeof(GetTaskById.CommandResult), 200)]
+    public async Task<ActionResult<GetTaskById.CommandResult>> GetById(GetTaskByIdEndpoint.Request request, CancellationToken cancellationToken)
+    {
+        var userId = HttpContext.GetUserId();
+        var command = new GetTaskById.Command(
+            userId,
+            request.TaskId
+        );
+        var result = await _mediator.Send(command, cancellationToken);
+
+        return Ok(result);
+    }
 }

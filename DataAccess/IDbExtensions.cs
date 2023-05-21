@@ -24,14 +24,15 @@ public class DbExtensions : IDbExtensions
     public async Task<bool> CanEditProject(Guid userId, Guid projectId, CancellationToken cancellationToken)
     {
         return await _context.Set<Participation>()
-            .AnyAsync(x => x.UserId == userId && x.ProjectId == projectId && x.Role == ParticipationRole.Admin || x.Role == ParticipationRole.Creator, cancellationToken: cancellationToken);
+            .Where(x => x.Project.Participations != null && x.Project.Participations.Any(y => y.UserId == userId))
+            .AnyAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<bool> CanEditTask(Guid userId, Guid taskId, CancellationToken cancellationToken)
     {
-        return await _context.Set<Participation>()
-            .Where(x => x.Project.Tasks != null && x.Project.Tasks.Any(y => y.Id == taskId))
-            .AnyAsync(x => x.UserId == userId && x.Role == ParticipationRole.Admin || x.Role == ParticipationRole.Creator, cancellationToken: cancellationToken);
+        return await _context.Set<ProjectTask>()
+            .Where(x => x.Project.Participations != null && x.Project.Participations.Any(y => y.UserId == userId && y.Role == ParticipationRole.Admin || y.Role == ParticipationRole.Creator))
+            .AnyAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<bool> CanViewProject(Guid userId, Guid projectId, CancellationToken cancellationToken)
