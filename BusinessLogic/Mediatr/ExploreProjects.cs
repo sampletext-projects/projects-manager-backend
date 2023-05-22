@@ -27,7 +27,7 @@ public static class ExploreProjects
         {
             // ищем открытые проекты, созданные другими пользователями
             var projects = await _repository.GetAll()
-                .Where(x => x.Visibility == Visibility.Visible && x.Participations != null && x.Participations.Any(y => y.Role == ParticipationRole.Creator && y.UserId != request.UserId))
+                .Where(x => x.Visibility == Visibility.Visible || (x.Participations != null && x.Participations.Any(y => y.UserId == request.UserId)))
                 .Select(x => new Item(x.Id, x.Title, x.Description))
                 .ToListAsync(cancellationToken);
 

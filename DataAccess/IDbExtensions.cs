@@ -24,14 +24,16 @@ public class DbExtensions : IDbExtensions
     public async Task<bool> CanEditProject(Guid userId, Guid projectId, CancellationToken cancellationToken)
     {
         return await _context.Set<Participation>()
-            .Where(x => x.Project.Participations != null && x.Project.Participations.Any(y => y.UserId == userId))
+            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Project.Participations != null && x.Project.Participations.Any(y => y.UserId == userId && (y.Role == ParticipationRole.Creator || y.Role == ParticipationRole.Admin)))
             .AnyAsync(cancellationToken: cancellationToken);
     }
 
     public async Task<bool> CanEditTask(Guid userId, Guid taskId, CancellationToken cancellationToken)
     {
         return await _context.Set<ProjectTask>()
-            .Where(x => x.Project.Participations != null && x.Project.Participations.Any(y => y.UserId == userId && y.Role == ParticipationRole.Admin || y.Role == ParticipationRole.Creator))
+            .Where(x => x.Id == taskId)
+            .Where(x => x.Project.Participations != null && x.Project.Participations.Any(y => y.UserId == userId && (y.Role == ParticipationRole.Admin || y.Role == ParticipationRole.Creator)))
             .AnyAsync(cancellationToken: cancellationToken);
     }
 

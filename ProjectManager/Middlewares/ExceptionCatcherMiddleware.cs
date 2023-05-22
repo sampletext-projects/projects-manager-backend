@@ -15,6 +15,7 @@ public class ExceptionCatcherMiddleware
 
     public async Task InvokeAsync(HttpContext context, ILogger<ExceptionCatcherMiddleware> logger /* other dependencies */)
     {
+        logger.LogInformation("Handling {path}", context.Request.Path.Value);
         try
         {
             await _next(context);

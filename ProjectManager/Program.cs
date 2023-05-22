@@ -61,7 +61,9 @@ app.UseCors(
                 "http://localhost",
                 "http://localhost:4200",
                 "https://localhost",
-                "https://localhost:4200"
+                "https://localhost:4200",
+                "http://birdegop.ru",
+                "https://birdegop.ru"
             )
             .AllowAnyMethod()
             .AllowAnyHeader()
