@@ -62,8 +62,9 @@ public static class AddUserToProject
             var participation = new Participation()
             {
                 ProjectId = request.ProjectId,
-                UserId = request.UserId,
-                Role = request.Role
+                UserId = request.InvitedUserId,
+                Role = request.Role,
+                GrantedAt = DateTime.UtcNow
             };
 
             await _participationRepository.Add(participation, cancellationToken);
